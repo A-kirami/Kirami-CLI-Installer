@@ -1,9 +1,5 @@
 [[redirects]]
 from = "/"
-to = "/install-kirami.py"
+to = "/install-kirami.min.py"
 status = 200
 force = true
-headers = { Content-Type = "text/plain; charset=utf-8" }
-
-[build]
-ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF install-kirami.py"
