@@ -270,6 +270,7 @@ class VirtualEnvironment:
             )
 
         try:
+            import ensurepip  # noqa: F401
             import venv
 
             builder = venv.EnvBuilder(clear=True, with_pip=True, symlinks=False)
@@ -283,7 +284,7 @@ class VirtualEnvironment:
                 target = target.resolve()
 
             builder.create(target)
-        except (ModuleNotFoundError, subprocess.CalledProcessError):
+        except ModuleNotFoundError:
             try:
                 import virtualenv  # type: ignore
             except ModuleNotFoundError:
