@@ -2,13 +2,13 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/98d5b5b3-47dc-4c1b-a62d-99ea08d37801/deploy-status)](https://app.netlify.com/sites/install-kirami/deploys)
 
-该存储库包含 Kirami CLI 的官方安装脚本和相关托管配置。
+该存储库包含 [Kirami CLI](https://github.com/A-kirami/KiramiCLI) 的官方安装脚本和相关托管配置。
 
 该脚本托管在 [Netlify](https://www.netlify.com) 上，并可在 https://install.kiramibot.dev/ 上获取。
 
 ## 使用方法
 
-Kirami CLI 提供了一个自定义的安装器，将会安装在你系统的隔离环境中。
+Kirami CLI 提供了一个自定义的安装器，可以将 Poetry 安装在一个新的虚拟环境中，使其与系统的其他部分隔离。这可确保不会意外升级或卸载依赖项，并允许 Kirami CLI 管理自己的环境。
 
 > [!WARNING]
 > 此安装程序不支持 Python 版本 < 3.10。
@@ -43,7 +43,7 @@ curl -sSL https://install.kiramibot.dev | python3 -
 kirami -V
 ```
 
-如果你看到类似 `Kirami CLI, version 0.1.0` 的信息，那么你就可以使用 Kirami CLI 了。
+如果你看到类似 `Kirami CLI, version 0.1.0` 的信息，那就表示你可以使用 Kirami CLI 了。
 
 如果你决定不再使用 Kirami CLI，你可以通过再次运行安装程序并使用 `--uninstall` 选项，
 或者在执行安装程序之前设置 `KIRAMI_UNINSTALL` 环境变量来从系统中彻底删除它：
