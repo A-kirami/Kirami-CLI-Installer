@@ -13,13 +13,14 @@ import shutil
 import subprocess
 import sysconfig
 import tempfile
+import time
 from collections.abc import Generator
 from contextlib import closing, contextmanager
 from functools import cmp_to_key
 from io import UnsupportedOperation
 from pathlib import Path
 from typing import Literal, Optional
-from urllib.request import Request, urlopen, urlretrieve
+from urllib import request
 
 SHELL = os.getenv("SHELL", "")
 WINDOWS = sys.platform.startswith("win") or (sys.platform == "cli" and os.name == "nt")
@@ -115,6 +116,34 @@ def string_to_bool(value) -> bool:
     value = value.lower()
 
     return value in {"true", "1", "y", "yes"}
+
+
+def download_with_progress(url: str, target_file: Path) -> None:
+    response = request.urlopen(url)
+    total_size = int(response.headers["Content-Length"])
+    block_size = 1024
+    downloaded_size = 0
+    start_time = time.time()
+
+    with open(target_file, "wb") as output_file:
+        while data := response.read(block_size):
+            output_file.write(data)
+            downloaded_size += len(data)
+            percent = (downloaded_size / total_size) * 100
+            elapsed_time = time.time() - start_time
+            remaining_time = (
+                (total_size - downloaded_size) / (downloaded_size / elapsed_time)
+                if downloaded_size > 0
+                else 0
+            )
+            sys.stdout.write(
+                f"\rDownloading: {percent:.2f}% - "
+                f"Elapsed Time: {elapsed_time:.2f}s - "
+                f"Remaining Time: {remaining_time:.2f}s"
+            )
+            sys.stdout.flush()
+
+    sys.stdout.write("\n")
 
 
 def data_dir() -> Path:
@@ -288,20 +317,24 @@ class VirtualEnvironment:
             try:
                 import virtualenv  # type: ignore
             except ModuleNotFoundError:
+                sys.stdout.write(
+                    "The 'ensurepip' module is not found. "
+                    "Attempting to download 'virtualenv'...\n"
+                )
                 python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-                url = f"https://bootstrap.pypa.io/virtualenv/{python_version}/virtualenv.pyz"
+                virtualenv_url = f"https://bootstrap.pypa.io/virtualenv/{python_version}/virtualenv.pyz"
                 with tempfile.TemporaryDirectory(prefix="kirami-installer-") as tempdir:
-                    virtualenv_zip = Path(tempdir) / "virtualenv.pyz"
-                    urlretrieve(url, virtualenv_zip)
+                    virtualenv_pyz = Path(tempdir) / "virtualenv.pyz"
+                    download_with_progress(virtualenv_url, virtualenv_pyz)
                     cls.run(
                         sys.executable,
-                        virtualenv_zip,
+                        virtualenv_pyz,
                         "--clear",
                         "--always-copy",
                         target,
                     )
             else:
-                virtualenv.cli_run([str(target)])
+                virtualenv.cli_run(["--clear", "--always-copy", str(target)])
 
         env = cls(target)
 
@@ -766,9 +799,7 @@ class Installer:
         self._write(line)
 
     def _get(self, url):
-        request = Request(url)
-
-        with closing(urlopen(request)) as r:
+        with closing(request.urlopen(url)) as r:
             return r.read()
 
 
