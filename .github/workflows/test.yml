@@ -1,0 +1,112 @@
+name: Test Installer
+
+on:
+  push:
+    paths:
+      - install-kirami.py
+      - .github/workflows/test.yml
+  pull_request:
+    paths:
+      - install-kirami.py
+      - .github/workflows/test.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  default:
+    name: Test Installer
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.11"]
+        args:
+          - ""
+          - "--preview"
+          - "--git https://github.com/A-kirami/KiramiCLI.git"
+          - "--version 0.1.0"
+      fail-fast: false
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Update PATH
+        if: matrix.os != 'windows-latest'
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Update PATH for Windows
+        if: matrix.os == 'windows-latest'
+        run: echo "$APPDATA\Python\Scripts" >> $GITHUB_PATH
+
+      - name: Install Kirami CLI
+        run: python install-kirami.py -y ${{ matrix.args }}
+
+      - name: Upload Failure Log
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: kirami-installer-error.log
+          path: kirami-installer-error-*.log
+
+      - name: Verify Installation
+        run: kirami -V
+
+      - name: Uninstall Kirami CLI
+        run: |
+          python install-kirami.py -y --uninstall
+          { type kirami 2>/dev/null >&2 && exit 1; } || exit 0
+
+  # debian/ubuntu needs special testing due to various issues around python packaging
+  # and configuration
+  integration-ubuntu:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    container: docker.io/ubuntu:${{ matrix.tag }}
+    strategy:
+      matrix:
+        tag:
+          - focal
+          - jammy
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Packages
+        run: |
+          apt-get -y update
+          apt-get -y install python3 ca-certificates
+          apt-get -y install --reinstall python3-distutils
+
+      - name: Update PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Kirami CLI
+        env:
+          DEB_PYTHON_INSTALL_LAYOUT: "deb"
+        run: python3 install-kirami.py -y
+
+      - name: Upload Failure Log
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: kirami-installer-error.log
+          path: kirami-installer-error-*.log
+
+      - name: Verify Installation
+        run: kirami -V
+
+      - name: Uninstall Kirami CLI
+        run: |
+          python3 install-kirami.py -y --uninstall
+          { type kirami 2>/dev/null >&2 && exit 1; } || exit 0
