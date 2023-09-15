@@ -1,0 +1,6 @@
+[[redirects]]
+from = "/"
+to = "/install-kirami.py"
+status = 200
+force = true
+headers = { Content-Type = "text/plain; charset=utf-8" }
