@@ -734,7 +734,7 @@ class Installer:
 
             raise ValueError(msg)
 
-        version = self._version
+        version = self._version or ""
         if not version:
             for release in reversed(releases):
                 m = self.VERSION_REGEX.match(release)
@@ -747,7 +747,7 @@ class Installer:
 
         if current_version == version and not self._force:
             self._write(
-                f'The latest version ({colorize("b", version or "")}) is already installed.'
+                f'The latest version ({colorize("b", version)}) is already installed.'
             )
 
             return None, current_version
