@@ -1,6 +1,6 @@
 # Kirami CLI Installer
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/98d5b5b3-47dc-4c1b-a62d-99ea08d37801/deploy-status)](https://app.netlify.com/sites/install-kirami/deploys)
+[![Script Deploy](https://github.com/A-kirami/Kirami-CLI-Installer/actions/workflows/deploy.yml/badge.svg)](https://github.com/A-kirami/Kirami-CLI-Installer/actions/workflows/deploy.yml)
 [![Test Installer](https://github.com/A-kirami/Kirami-CLI-Installer/actions/workflows/test.yml/badge.svg)](https://github.com/A-kirami/Kirami-CLI-Installer/actions/workflows/test.yml)
 
 该存储库包含 [Kirami CLI](https://github.com/A-kirami/KiramiCLI) 的官方安装脚本和相关托管配置。
