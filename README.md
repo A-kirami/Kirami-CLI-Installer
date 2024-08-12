@@ -5,7 +5,7 @@
 
 该存储库包含 [Kirami CLI](https://github.com/A-kirami/KiramiCLI) 的官方安装脚本和相关托管配置。
 
-该脚本托管在 [Netlify](https://www.netlify.com) 上，并可在 https://install.kiramibot.dev/ 上获取。
+该脚本托管在 [Netlify](https://www.netlify.com) 上，并可在 https://install.kirami.bot/ 上获取。
 
 ## 使用方法
 
@@ -17,13 +17,13 @@ Kirami CLI 提供了一个自定义的安装器，可以将 Kirami CLI 安装在
 ### osx / linux / bashonwindows / Windows+MinGW 安装指南
 
 ```bash
-curl -sSL https://install.kiramibot.dev | python3 -
+curl -sSL https://install.kirami.bot | python3 -
 ```
 
 ### Windows PowerShell 安装指南
 
 ```powershell
-(Invoke-WebRequest -Uri https://install.kiramibot.dev -UseBasicParsing).Content | py -
+(Invoke-WebRequest -Uri https://install.kirami.bot -UseBasicParsing).Content | py -
 ```
 
 > [!NOTE]
@@ -50,35 +50,35 @@ kirami -V
 或者在执行安装程序之前设置 `KIRAMI_UNINSTALL` 环境变量来从系统中彻底删除它：
 
 ```bash
-curl -sSL https://install.kiramibot.dev | python3 - --uninstall
-curl -sSL https://install.kiramibot.dev | KIRAMI_UNINSTALL=1 python3 -
+curl -sSL https://install.kirami.bot | python3 - --uninstall
+curl -sSL https://install.kirami.bot | KIRAMI_UNINSTALL=1 python3 -
 ```
 
 默认情况下，Kirami CLI 安装在用户特定的平台主目录下。
 如果你希望更改此设置，可以定义 `KIRAMI_HOME` 环境变量：
 
 ```bash
-curl -sSL https://install.kiramibot.dev | KIRAMI_HOME=/etc/kirami python3 -
+curl -sSL https://install.kirami.bot | KIRAMI_HOME=/etc/kirami python3 -
 ```
 
 如果你希望安装预发布版本，可以通过传递 `--preview` 选项或使用 `KIRAMI_PREVIEW` 环境变量来执行：
 
 ```bash
-curl -sSL https://install.kiramibot.dev | python3 - --preview
-curl -sSL https://install.kiramibot.dev | KIRAMI_PREVIEW=1 python3 -
+curl -sSL https://install.kirami.bot | python3 - --preview
+curl -sSL https://install.kirami.bot | KIRAMI_PREVIEW=1 python3 -
 ```
 
 类似地，如果你想安装特定版本，可以使用 `--version` 选项或 `KIRAMI_VERSION` 环境变量：
 
 ```bash
-curl -sSL https://install.kiramibot.dev | python3 - --version 0.1.0
-curl -sSL https://install.kiramibot.dev | KIRAMI_VERSION=0.1.0 python3 -
+curl -sSL https://install.kirami.bot | python3 - --version 0.1.0
+curl -sSL https://install.kirami.bot | KIRAMI_VERSION=0.1.0 python3 -
 ```
 
 你还可以通过使用 `--git` 选项从 `git` 存储库安装 Kirami CLI：
 
 ```bash
-curl -sSL https://install.kiramibot.dev | python3 - --git https://github.com/A-kirami/KiramiCLI.git@main
+curl -sSL https://install.kirami.bot | python3 - --git https://github.com/A-kirami/KiramiCLI.git@main
 ```
 
 ## 已知问题
